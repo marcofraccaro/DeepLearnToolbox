@@ -18,13 +18,13 @@ nn.activation_function = 'tanh_opt';    %  Sigmoid activation function
 nn.output= 'softmax';                   %  Softmax for classification
 nn.normalize_input = 0;                 %  Don't normalize inputs
 nn.learningRate = 0.25;                 %  Learning rate
-opts.numepochs =  500;                  %  Number of full sweeps through data
+opts.numepochs =  700;                  %  Number of full sweeps through data
 opts.batchsize = 100;                   %  Take a mean gradient step over this many samples
 
 nn.momentum  = 0.5; 
 nn.it_no_momentum = 10; 
 nn.normalize_momentum = 0;              %  Normalize momentum term (requires nn.it_no_momentum > 0)
-nn.scaling_learningRate = 0.998;
+nn.scaling_learningRate = 0.998;        %  Reduce learning rate at each iteration
 nn.dropoutFraction = 0.5; 
 
 nn = nntrain(nn, gpuArray(train_x), gpuArray(train_y), opts);
