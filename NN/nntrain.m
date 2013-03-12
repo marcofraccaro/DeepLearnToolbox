@@ -56,7 +56,7 @@ function [nn, L] = nntrain(nn, x, y, opts)
 
         t = toc;
         
-        disp(['epoch ' num2str(i) '/' num2str(opts.numepochs) '. Took ' num2str(t) ' seconds' '. Mean squared error on training set is ' num2str(mean(L((n-numbatches):(n-1))))]);
+        disp(['epoch ' num2str(i) '/' num2str(opts.numepochs) '. Took ' num2str(t) ' seconds' '. Training error is ' num2str(mean(L((n-numbatches):(n-1))))]);
                 
         nn.learningRate = nn.learningRate * nn.scaling_learningRate;
         
