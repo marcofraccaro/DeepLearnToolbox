@@ -14,14 +14,14 @@ function nn = nnbp(nn)
         % Derivative of the activation function
         switch nn.activation_function 
             case 'sigm'
-                d_act = nn.a{i} .* (1 - nn.a{i});
+                d_act = nn.a{i} .* (gpuArray.ones(size(nn.a{i})) - nn.a{i});
             case 'tanh_opt'
-                d_act = 1.7159 * 2/3 * (1 - 1/(1.7159)^2 * nn.a{i}.^2);
+                d_act = 1.7159 * 2/3 * (gpuArray.ones(size(nn.a{i})) - 1/(1.7159)^2 * nn.a{i}.^2);
         end
         
         if(nn.nonSparsityPenalty>0)
             pi = repmat(nn.p{i}, size(nn.a{i}, 1), 1);
-            sparsityError = [zeros(size(nn.a{i},1),1) nn.nonSparsityPenalty * (-nn.sparsityTarget ./ pi + (1 - nn.sparsityTarget) ./ (1 - pi))];
+            sparsityError = [gpuArray.zeros(size(nn.a{i},1),1) nn.nonSparsityPenalty * (-nn.sparsityTarget ./ pi + (1 - nn.sparsityTarget) ./ (1 - pi))];
         end
         
         % Backpropagate first derivatives
@@ -32,7 +32,7 @@ function nn = nnbp(nn)
         end
         
         if(nn.dropoutFraction>0)
-            d{i} = d{i} .* [ones(size(d{i},1),1) nn.dropOutMask{i}];
+            d{i} = d{i} .* [gpuArray.ones(size(d{i},1),1) nn.dropOutMask{i}];
         end
 
     end

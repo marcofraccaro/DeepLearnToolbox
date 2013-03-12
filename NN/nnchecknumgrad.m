@@ -8,14 +8,14 @@ function nnchecknumgrad(nn, x, y)
                 nn_m = nn; nn_p = nn;
                 nn_m.W{l}(i, j) = nn.W{l}(i, j) - epsilon;
                 nn_p.W{l}(i, j) = nn.W{l}(i, j) + epsilon;
-                rng(0);
+                parallel.gpu.rng(0);
                 nn_m = nnff(nn_m, x, y);
-                rng(0);
+                parallel.gpu.rng(0);
                 nn_p = nnff(nn_p, x, y);
                 dW = (nn_p.L - nn_m.L) / (2 * epsilon);
                 e = abs(dW - nn.dW{l}(i, j));
                 
-                assert(e < er, 'numerical gradient checking failed');
+                assert(gather(e) < er, 'numerical gradient checking failed');
             end
         end
     end

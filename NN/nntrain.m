@@ -6,7 +6,9 @@ function [nn, L] = nntrain(nn, x, y, opts)
 % errors, weights and biases, (nn.a, nn.e, nn.W, nn.b) and L, the sum 
 % squared error for each training minibatch.
 
-    assert(isfloat(x), 'x must be a float');
+    
+    assert(isa(x,'gpuArray'), 'x must be a gpuArray');
+    assert(isa(y,'gpuArray'), 'y must be a gpuArray');
     m = size(x, 1);
     
     if nn.normalize_input==1
@@ -24,7 +26,7 @@ function [nn, L] = nntrain(nn, x, y, opts)
     tmp_momentum=nn.momentum;
     nn.momentum=0; % momentum is used only after nn.it_no_momentum epochs
     
-    L = zeros(numepochs*numbatches,1);
+    L = gpuArray.zeros(numepochs*numbatches,1);
     n = 1;
     for i = 1 : numepochs
         tic;

@@ -14,9 +14,9 @@ function nn = nnff(nn, x, y)
         switch nn.activation_function 
             case 'sigm'
                 % Calculate the unit's outputs (including the bias term)
-                nn.a{i} = sigm(nn.a{i - 1} * nn.W{i - 1}');
+                nn.a{i} = arrayfun(@sigm,nn.a{i - 1} * nn.W{i - 1}');
             case 'tanh_opt'
-                nn.a{i} = tanh_opt(nn.a{i - 1} * nn.W{i - 1}');
+                nn.a{i} = arrayfun(@tanh_opt,nn.a{i - 1} * nn.W{i - 1}');
         end
         
         %dropout
@@ -24,7 +24,7 @@ function nn = nnff(nn, x, y)
             if(nn.testing)
                 nn.a{i} = nn.a{i}.*(1 - nn.dropoutFraction);
             else
-                nn.dropOutMask{i} = (rand(size(nn.a{i}))>nn.dropoutFraction);
+                nn.dropOutMask{i} = (gpuArray.rand(size(nn.a{i}))>nn.dropoutFraction);
                 nn.a{i} = nn.a{i}.*nn.dropOutMask{i};
             end
         end
@@ -35,11 +35,11 @@ function nn = nnff(nn, x, y)
         end
         
         %Add the bias term
-        nn.a{i} = [ones(m,1) nn.a{i}];
+        nn.a{i} = [gpuArray.ones(m,1) nn.a{i}];
     end
     switch nn.output 
         case 'sigm'
-            nn.a{n} = sigm(nn.a{n - 1} * nn.W{n - 1}');
+            nn.a{n} = arrayfun(@sigm, nn.a{n - 1} * nn.W{n - 1}');
         case 'linear'
             nn.a{n} = nn.a{n - 1} * nn.W{n - 1}';
         case 'softmax'

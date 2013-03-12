@@ -16,7 +16,7 @@ function nn = nnapplygrads(nn)
             end
             norm_constant=(nn.learningRate.*norm_dE)./norm_vW;
         else
-            norm_constant=ones(size(nn.size(1:end-1)));
+            norm_constant=gpuArray.ones(size(nn.size(1:end-1)));
         end
     end
     

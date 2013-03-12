@@ -1,4 +1,8 @@
 function [er, bad] = nntest(nn, x, y)
+
+    assert(isa(x,'gpuArray'), 'x must be a gpuArray');
+    assert(isa(y,'gpuArray'), 'y must be a gpuArray');
+    
     if nn.normalize_input==1;
        x = zscore(x);
     end
